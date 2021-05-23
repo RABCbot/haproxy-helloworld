@@ -1,0 +1,55 @@
+version: "3.6"
+
+networks:
+  internal-network:
+    name: mingle-network
+
+services:
+  portainer:
+    hostname: portainer
+    container_name: portainer
+    image: portainer/portainer-ce
+    networks:
+      - internal-network
+    ports:
+      - "8000:8000"
+      - "9000:9000"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/home/imagine-admin/docker-haproxy/portainer:/data"
+  ha:
+    hostname: ha1
+    container_name: ha1
+    image: haproxy:2.4
+    networks:
+      - internal-network
+    ports:
+      - "8080:80"
+    volumes:
+      - "/home/imagine-admin/docker-haproxy:/usr/local/etc/haproxy:ro"
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: "0"
+  uno:
+    hostname: uno
+    container_name: uno
+    image: rabcbot/helloworld-flask
+    networks:
+      - internal-network
+    ports:
+      - "8081:80"
+  dos:
+    hostname: dos
+    container_name: dos
+    image: rabcbot/helloworld-flask
+    networks:
+      - internal-network
+    ports:
+      - "8082:80"
+  tres:
+    hostname: tres
+    container_name: tres
+    image: rabcbot/helloworld-flask
+    networks:
+      - internal-network
+    ports:
+      - "8083:80"
